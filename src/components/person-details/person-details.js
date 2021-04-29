@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
-import person from '../../img/characters/1.jpg';
-
 import './person-details.css';
 
 export default class PersonDetails extends Component {
 
   render() {
 
-    console.log(person)
-
     return (
       <div className="person-details card">
         <img className="person-image"
-          src={person} alt="" />
+          src="img/characters/1.jpg" alt="" />
 
         <div className="card-body">
           <h4>R2-D2</h4>

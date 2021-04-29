@@ -8,7 +8,7 @@ export default class RandomPlanet extends Component {
     return (
       <div className="random-planet jumbotron rounded">
         <img className="planet-image"
-             src="../img/planets/5.jpg" alt="" />
+             src="img/planets/5.jpg" alt="" />
         <div>
           <h4>Planet Name</h4>
           <ul className="list-group list-group-flush">
