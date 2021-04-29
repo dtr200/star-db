@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-
+import Spinner from '../spinner';
+import ErrorIndicator from '../error-indicator';
 import SwapiService from '../../services/swapi-service';
 
 import './random-planet.css';
@@ -9,7 +10,8 @@ export default class RandomPlanet extends Component {
   SwapiService = new SwapiService();
 
   state = {
-    planet: {}
+    planet: {},
+    loading: true
   }
 
   constructor(){
@@ -18,24 +20,57 @@ export default class RandomPlanet extends Component {
   }
 
   onPlanetLoaded = (planet) => {
-    this.setState({planet})
+    this.setState({
+      planet,
+      loading: false,
+      error: false
+    })
+  }
+
+  onError = (err) => {
+    this.setState({ 
+      error: true,
+      loading: false
+    });
   }
 
   updatePlanet(){
     const id = Math.floor(Math.random() * 25 + 2);
     this.SwapiService
       .getPlanet(id)
-      .then(this.onPlanetLoaded);
+      .then(this.onPlanetLoaded)
+      .catch(this.onError);
   }
 
   render() {
 
-    const { planet: { id, name, population,
-            rotationPeriod, diameter } } = this.state;
+    const { planet, loading, error } = this.state;
+
+    const hasData = !(loading || error);
+
+    const spinner = loading ? <Spinner /> : null;
+    const content = hasData ? <PlanetView planet={planet}/> : null;
+    const errorMessage = error ? <ErrorIndicator /> : null;
 
     return (
       <div className="random-planet jumbotron rounded">
-        <img className="planet-image"
+        {errorMessage}
+        {spinner}
+        {content}
+      </div>
+
+    );
+  }
+}
+
+const PlanetView = ({ planet }) => {
+
+  const { id, name, population,
+          rotationPeriod, diameter } = planet;
+
+  return (
+    <React.Fragment>
+      <img className="planet-image"
              src={`img/planets/${id}.jpg`} alt="" />
         <div>
           <h4>{name}</h4>
@@ -54,8 +89,6 @@ export default class RandomPlanet extends Component {
             </li>
           </ul>
         </div>
-      </div>
-
-    );
-  }
+    </React.Fragment>
+  )
 }
