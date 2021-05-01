@@ -3,11 +3,19 @@ import ErrorButton from '../error-button';
 import Header from '../header';
 import RandomPlanet from '../random-planet';
 import PeoplePage from '../people-page';
+import ItemList from '../item-list';
+import PersonDetails from '../item-details';
+import Row from '../row';
 
 import './app.css';
 import ErrorIndicator from '../error-indicator';
+import ErrorBoundry from '../error-boundry';
+import SwapiService from '../../services/swapi-service';
+import ItemDetails from '../item-details';
 
 export default class App extends Component {
+
+  swapiService = new SwapiService();
 
   state = {
     showRandomPlanet: true,
@@ -17,7 +25,8 @@ export default class App extends Component {
   toggleRandomPlanet = () => {
     this.setState((state) => {
       return {
-        showRandomPlanet: !state.showRandomPlanet
+        showRandomPlanet: !state.showRandomPlanet,
+        selectedPerson: 5
       }
     });
   };
@@ -31,26 +40,33 @@ export default class App extends Component {
     if(this.state.hasError)
       return <ErrorIndicator />
 
-    const { showRandomPlanet } = this.state;
+    const { showRandomPlanet, selectedPerson } = this.state;
 
     const planet = showRandomPlanet ? <RandomPlanet /> : null;
 
+    const { getPerson, getStarship, 
+            getPersonImage, getStarshipsImage } = this.swapiService;
+
+    const personDetails = (
+      <ItemDetails itemId={11}
+                   getData={getPerson}
+                   getImageUrl={getPersonImage} />
+    );
+
+    const starshipDetails = (
+      <ItemDetails itemId={5} 
+                   getData={getStarship}
+                   getImageUrl={getStarshipsImage} />
+    );
+
     return (
-      <div>
-        <Header />
-        {planet}
-        <div className="row mb2 button-row">
-          <button
-              className="toggle-planet btn btn-warning btn-lg"
-              onClick={this.toggleRandomPlanet}>
-              Toggle Random Planet
-          </button>
-          <ErrorButton />
+      <ErrorBoundry>
+        <div className="stardb-app">
+          <Header />
+
+          <Row left={personDetails} right={starshipDetails} />
         </div>
-        <PeoplePage />
-        <PeoplePage />
-        <PeoplePage />
-      </div>
+      </ErrorBoundry>
     );
   }
 };

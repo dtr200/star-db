@@ -2,7 +2,7 @@ export default class SwapiService{
 
     _apiBase = `https://swapi.dev/api`;
   
-    async getResource(url){
+    getResource = async (url) => {
         const res = await fetch(`${this._apiBase}${url}`);
   
         // если статус не 200
@@ -14,40 +14,52 @@ export default class SwapiService{
         return await res.json();
     }
   
-    async getAllPeople(){
+    getAllPeople = async () => {
         const peoples = await this.getResource(`/people/`);
         return peoples.results.map(person =>
                 this._transformPerson(person));
     }
   
-    async getPerson(id){
+    getPerson = async (id) => {
         const person = await this.getResource(`/people/${id}`);
         return this._transformPerson(person);
     }
+
+    getPersonImage = ({ id }) => {
+        return `img/characters/${id}.jpg`;
+    }
   
-    async getAllPlanets(){
+    getAllPlanets = async () => {
         const planets = await this.getResource(`/planets/`);
         return planets.results.map(planet => 
                 this._transformPlanet(planet));
     }
   
-    async getPlanet(id){
+    getPlanet = async (id) => {
         const planet = await this.getResource(`/planets/${id}`);
         return this._transformPlanet(planet);
     }
+
+    getPlanetImage = ({ id }) => {
+        return `img/planets/${id}.jpg`;
+    }
   
-    async getAllStarships(){
-        const starships = await this.getResource(`starships/`);
+    getAllStarships = async () => {
+        const starships = await this.getResource(`/starships/`);
         return starships.results.map(starship => 
                 this._transformStarship(starship));
     }
     
-    async getStarship(id){
-        const starship = await this.getResource(`starships/${id}`);
+    getStarship = async (id) => {
+        const starship = await this.getResource(`/starships/${id}`);
         return this._transformStarship(starship);
     }
 
-    _extractId(item){
+    getStarshipsImage = ({ id }) => {
+        return `img/starships/${id}.jpg`;
+    }
+
+    _extractId = (item) => {
         const idRegExp = /\/([0-9]*)\/$/;
         return item.url.match(idRegExp)[1];
     }
@@ -66,8 +78,8 @@ export default class SwapiService{
             id: this._extractId(person),
             name: person.name,
             gender: person.gender,
-            birthYear: person.birthYear, 
-            eyeColor: person.eyeColor
+            birthYear: person.birth_year, 
+            eyeColor: person.eye_color
         }
     }
     _transformStarship = (starship) => {
@@ -76,11 +88,11 @@ export default class SwapiService{
             name: starship.name,
             model: starship.model,
             manufacturer: starship.manufacturer, 
-            costInCredits: starship.costInCredits,
+            costInCredits: starship.cost_in_credits,
             length: starship.length,
             crew: starship.crew,
             passengers: starship.passengers,
-            cargoCapacity: starship.cargoCapacity
+            cargoCapacity: starship.cargo_capacity
         }
     }
   }
