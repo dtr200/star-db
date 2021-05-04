@@ -15,16 +15,18 @@ export default class ItemDetails extends Component {
   }
 
   componentDidMount(){
-    this.updatePerson()
+    this.updateItem()
   }
 
   componentDidUpdate(prevProps){
-    if(this.props.itemId !== prevProps.itemId){
-      this.updatePerson();
+    if(this.props.itemId !== prevProps.itemId ||
+       this.props.getData !== prevProps.getData ||
+       this.props.getImageUrl !== prevProps.getImageUrl){
+      this.updateItem();
     }
   }
 
-  updatePerson(){
+  updateItem(){
     const { itemId, getData, getImageUrl } = this.props;
     if(!itemId)
       return;
